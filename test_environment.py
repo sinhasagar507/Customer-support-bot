@@ -1,4 +1,5 @@
 import sys
+import numpy as np 
 
 REQUIRED_PYTHON = "python3"
 
