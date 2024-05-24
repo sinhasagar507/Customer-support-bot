@@ -1,0 +1,16 @@
+Collecting contractions
+  Downloading contractions-0.1.73-py2.py3-none-any.whl.metadata (1.2 kB)
+Collecting textsearch>=0.0.21 (from contractions)
+  Downloading textsearch-0.0.24-py2.py3-none-any.whl.metadata (1.2 kB)
+Collecting anyascii (from textsearch>=0.0.21->contractions)
+  Downloading anyascii-0.3.2-py3-none-any.whl.metadata (1.5 kB)
+Collecting pyahocorasick (from textsearch>=0.0.21->contractions)
+  Downloading pyahocorasick-2.1.0-cp312-cp312-macosx_10_9_universal2.whl.metadata (13 kB)
+Downloading contractions-0.1.73-py2.py3-none-any.whl (8.7 kB)
+Downloading textsearch-0.0.24-py2.py3-none-any.whl (7.6 kB)
+Downloading anyascii-0.3.2-py3-none-any.whl (289 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 289.9/289.9 kB 1.9 MB/s eta 0:00:00
+Downloading pyahocorasick-2.1.0-cp312-cp312-macosx_10_9_universal2.whl (63 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 63.9/63.9 kB 6.7 MB/s eta 0:00:00
+Installing collected packages: pyahocorasick, anyascii, textsearch, contractions
+Successfully installed anyascii-0.3.2 contractions-0.1.73 pyahocorasick-2.1.0 textsearch-0.0.24
