@@ -80,7 +80,8 @@ objects/
 
 
 # exclude data from source control by default
-/data/
+data/
+models/
 
 # Mac OS-specific storage files
 .DS_Store
