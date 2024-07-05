@@ -1,0 +1,70 @@
+wandb_version: 1
+
+learning_rate:
+  desc: null
+  value: 0.01
+architecture:
+  desc: null
+  value: LSTM-RNN
+dataset:
+  desc: null
+  value: custom-intent-data
+optimizer:
+  desc: null
+  value: Adam
+epochs:
+  desc: null
+  value: 20
+batch_size:
+  desc: null
+  value: 32
+embedding_size:
+  desc: null
+  value: 100
+hidden_size:
+  desc: null
+  value: 128
+output_size:
+  desc: null
+  value: 9
+num_layers:
+  desc: null
+  value: 2
+dropout:
+  desc: null
+  value: 0.1
+eval_metric:
+  desc: null
+  value: accuracy
+_wandb:
+  desc: null
+  value:
+    python_version: 3.12.3
+    cli_version: 0.17.3
+    framework: torch
+    is_jupyter_run: true
+    is_kaggle_kernel: false
+    start_time: 1720154919
+    t:
+      1:
+      - 1
+      - 5
+      - 33
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 33
+      - 53
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.12.3
+      5: 0.17.3
+      8:
+      - 1
+      - 4
+      - 5
+      13: darwin-arm64
