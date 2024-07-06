@@ -78,6 +78,9 @@ target/
 # Objects and data 
 objects/
 
+# Runs 
+notebooks/wandb/
+notebooks/wandb/latest-run/
 
 # exclude data from source control by default
 data/
