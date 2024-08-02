@@ -145,7 +145,7 @@ pydantic_core==2.20.1
 pydeck==0.9.1
 pydot==1.4.2
 pykwalify==1.8.0
-pymongo==4.3.3
+pymongo==4.6.3
 pyparsing==3.1.2
 pyrsistent==0.20.0
 python-crfsuite==0.9.10
