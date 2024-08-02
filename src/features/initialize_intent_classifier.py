@@ -1,17 +1,22 @@
 # Importing the necessary libraries
 import re 
-import contractions as cm 
+import string 
+import contractions as cm
 from nltk.tokenize import TweetTokenizer #type: ignore
 import pickle as pkl 
-import torch 
-from ..models.define_model import IntentClassifier
-
+import torch
+import joblib
+# from src.models.define_model import IntentClassifier
+# from src.models.define_model import IntentClassifier
+from src.models.define_model import IntentClassifier
+# Define the sequence length
+SEQ_LEN = 32
 
 # Create a blank Tokenizer with just the English vocab
 tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
 
 def clean_text(
-        text, words=True, stops=True, urls=True, tags=True, hashtags = True, punctuations=True,  
+        text, manual_stopwords, words=True, stops=True, urls=True, tags=True, hashtags = True, punctuations=True,  
         newLine=True, ellipsis=True, special_chars=True, condensed=True, non_breaking_space=True, 
         character_encodings=True, stopwords=True, only_words=True) -> str:
     
@@ -73,90 +78,70 @@ def clean_text(
     #     text = " ".join(words)
     #     text = text.strip()  # Add further checks for cleaning 
     
-    return text
-
-# List of manual stopwords
-manual_stopwords = {
-    'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 
-    'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 
-    'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 
-    'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 
-    'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 
-    'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 
-    'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 
-    'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 
-    'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 
-    'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 
-    'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 
-    'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now'
-}
+    tokens = tokenizer.tokenize(text)
     
-def basic_preprocess_tokens(tokens): 
-    # Convert to lowercase
+    def basic_preprocess_tokens(): 
+        # Convert to lowercase
+            
+        # Convert string representation of list to actual list
+        # tokens = ast.literal_eval(tokens)
         
-    # Convert string representation of list to actual list
-    # tokens = ast.literal_eval(tokens)
+        # Convert to lowercase
+        tokens = [token.lower() for token in tokens]
+        
+        # Remove punctuation
+        tokens = [token.translate(str.maketrans('', '', string.punctuation)) for token in tokens]
+        
+        # Remove stopwords
+        tokens = [token for token in tokens if token not in manual_stopwords]
+        
+        return tokens
     
-    # Convert to lowercase
-    tokens = [token.lower() for token in tokens]
-    
-    # Remove punctuation
-    tokens = [token.translate(str.maketrans('', '', string.punctuation)) for token in tokens]
-    
-    # Remove stopwords
-    tokens = [token for token in tokens if token not in manual_stopwords]
-    
-    return tokens
+    return basic_preprocess_tokens()
 
-def load_model(): 
+def model_inference(tokens): 
+    import torch
     # Load the embedding matrix
     with open("../../objects/embedding_matrix.pkl", "rb") as file:
         embedding_matrix = pkl.load(file)
         
+    # Load the vocabulary
+    with open("../../objects/vocabulary.pkl", "rb") as file:
+        vocabulary = pkl.load(file)
+        
+    # Load the label encoder
+    with open("../../objects/label_encoder.joblib", "rb") as file:
+        label_encoder = joblib.load(file)
+        
+
     
     # Initialize and load the model 
     model = IntentClassifier(embedding_matrix)
     checkpoint = torch.load("../../models/intent_classification_model.pt")  
     model.load_state_dict(checkpoint["model_state_dict"])
     
-    return model
+    
+    # Extract the tokens from the text
+    
 
-    def inference(tokens): 
+    def predict():
+        indices = [vocabulary.get(token, vocabulary["<unknown>"]) for token in tokens]  # Use 0 for unknown words
+        padded_indices = indices[:SEQ_LEN] + [0] * max(0, SEQ_LEN - len(indices))  # Pad with zeros
+        print(padded_indices)
+        input_tensor = torch.tensor(padded_indices).unsqueeze(0)  # Add batch dimension
+        print(input_tensor)
+        # print(input_tensor.shape)
         
-
-# Load the vocabulary and label encoder
-# Load the trained model 
-def inference(tokens):
-    """ 
-    Perform preprocessing and inference on the input text using the trained model.
+        # Perform inference
+        with torch.no_grad():
+            output = model(input_tensor)
+            label = torch.argmax(output, 1)
+            label_text = label_encoder.inverse_transform(label)
+        
+        return label_text
     
-    Parameters:
-    - model: The trained PyTorch model for intent classification.
-    - text: The input text string.
-    - vocabulary: A dictionary mapping tokens to indices.
-    - seq_len: The fixed sequence length expected by the model.
-    
-    Returns:
-    - pred_label: The predicted label index.
-    """
-
-    # Preprocess the text
-    # tokens = text.split()
-    indices = [vocabulary.get(token, vocabulary["<unknown>"]) for token in tokens]  # Use 0 for unknown words
-    padded_indices = indices[:seq_len] + [0] * max(0, seq_len - len(indices))  # Pad with zeros
-    print(padded_indices)
-    input_tensor = torch.tensor(padded_indices).unsqueeze(0)  # Add batch dimension
-    print(input_tensor)
-    # print(input_tensor.shape)
-    
-    # Perform inference
-    with torch.no_grad():
-        output = model(input_tensor)
-        label = torch.argmax(output, 1)
-        label_text = label_encoder.inverse_transform(label)
-    
-    return label_text
-
+    return predict()
+        
 if __name__=="main":
     
     # Write down all the stopwords and punctuation marks for removal 
@@ -176,12 +161,11 @@ if __name__=="main":
 }
     
     # Punctuation marks to remove
-    puncts = ['\u200d', '?', '....','..','...','','@','#', ',', '.', '"', ':', ')', '(', '-', '!', '|', ';', "'", '$', '&', '/', '[', ']', '>', '%', '=', '*', '+', '\\', 
-        '•', '~', '£', '·', '_', '{', '}', '©', '^', '®', '`',  '<', '→', '°', '€', '™', '›',  '♥', '←', '×', '§', '″', '′', 'Â', '█', 
-        '½', 'à', '…', '“', '★', '”', '–', '●', 'â', '►', '−', '¢', '²', '¬', '░', '¶', '↑', '±', '¿', '▾', '═', '¦', '║', '―', '¥', '▓', 
-        '—', '‹', '─', '▒', '：', '¼', '⊕', '▼', '▪', '†', '■', '’', '▀', '¨', '▄', '♫', '☆', 'é', '¯', '♦', '¤', '▲', 'è', '¸', '¾', 
-        'Ã', '⋅', '‘', '∞', '∙', '）', '↓', '、', '│', '（', '»', '，', '♪', '╩', '╚', '³', '・', '╦', '╣', '╔', '╗', '▬', '❤', 'ï', 'Ø', 
-        '¹', '≤', '‡', '√', '!','🅰','🅱']
+    # Test the inference function
+    text = "I am feeling very happy today"
+    tokens = clean_text(text, manual_stopwords)
+    print(model_inference(tokens))
+    
     
     
     

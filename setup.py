@@ -1,5 +1,10 @@
+import sys 
+import os 
+import torch 
 from setuptools import find_packages, setup
 
+
+sys.path.append(os.getcwd())
 setup(
     name='src',
     packages=find_packages(),

@@ -1,0 +1,69 @@
+wandb_version: 1
+
+learning_rate:
+  desc: null
+  value: 0.0001
+epochs:
+  desc: null
+  value: 30
+batch_size:
+  desc: null
+  value: 32
+embedding_size:
+  desc: null
+  value: 200
+hidden_size:
+  desc: null
+  value: 128
+output_size:
+  desc: null
+  value: 9
+num_layers:
+  desc: null
+  value: 2
+dropout:
+  desc: null
+  value: 0.2
+eval_metric:
+  desc: null
+  value: accuracy
+weight_decay:
+  desc: null
+  value: 1.0e-06
+scheduler_lambda_epoch_threshold:
+  desc: null
+  value: 10
+scheduler_decay_rate:
+  desc: null
+  value: -0.1
+_wandb:
+  desc: null
+  value:
+    python_version: 3.9.6
+    cli_version: 0.17.3
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1722208697
+    t:
+      1:
+      - 1
+      - 5
+      - 33
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 33
+      - 53
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.9.6
+      5: 0.17.3
+      8:
+      - 4
+      - 5
+      13: darwin-arm64
