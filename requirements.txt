@@ -29,7 +29,7 @@ contourpy==1.2.1
 contractions==0.1.73
 coverage==7.6.0
 coveralls==4.0.1
-cryptography==42.0.8
+cryptography==43.0.1
 cycler==0.12.1
 cymem==2.0.8
 dacite==1.8.1
